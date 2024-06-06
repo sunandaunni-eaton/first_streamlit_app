@@ -1,15 +1,21 @@
-import streamlit
+import streamlit 
 import snowflake.connector
+from snowflake.snowpark.functions import col
 import pandas
 streamlit.title('Zena\'s Amazing Athleisure Catalog')
 # connect to snowflake
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-my_cur = my_cnx.cursor()
+##my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+##my_cur = my_cnx.cursor()
+cnx = streamlit.connection("snowflake")
+session = cnx.session()
 # run a snowflake query and put it all in a var called my_catalog
-my_cur.execute("select color_or_style from catalog_for_website")
-my_catalog = my_cur.fetchall()
+##my_cur.execute("select color_or_style from catalog_for_website")
+##my_catalog = my_cur.fetchall()
+my_catalog = session.table("catalog_for_website").select(col('color_or_style'))
+df = my_catalog.to_pandas()
+
 # put the dafta into a dataframe
-df = pandas.DataFrame(my_catalog)
+##df = pandas.DataFrame(my_catalog)
 # temp write the dataframe to the page so I Can see what I am working with
 # streamlit.write(df)
 # put the first column into a list
@@ -23,10 +29,10 @@ product_caption = 'Our warm, comfortable, ' + option + ' sweatsuit!'
 my_cur.execute("select direct_url, price, size_list, upsell_product_desc from catalog_for_website where color_or_style = '" + option + "';")
 df2 = my_cur.fetchone()
 streamlit.image(
-df2[0],
-width=400,
-caption= product_caption
+  df2[0],
+  width=400,
+  caption= product_caption
 )
-streamlit.write('Price: ', df2[1])
-streamlit.write('Sizes Available: ',df2[2])
-streamlit.write(df2[3])
+#streamlit.write('Price: ', df2[1])
+#streamlit.write('Sizes Available: ',df2[2])
+#streamlit.write(df2[3])
