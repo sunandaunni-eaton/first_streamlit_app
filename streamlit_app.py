@@ -30,8 +30,9 @@ product_caption = 'Our warm, comfortable, ' + option + ' sweatsuit!'
 #my_cur.execute("select direct_url, price, size_list, upsell_product_desc from catalog_for_website where color_or_style = '" + option + "';")
 #df2 = my_cur.fetchone()
 select_stmt = """select direct_url, price, size_list, upsell_product_desc from catalog_for_website where color_or_style = '""" + option + """' limit 1;"""
-df2 = session.sql(select_stmt)
-df2.collect()
+#df2 = session.sql(select_stmt)
+#df2.collect()
+df2 = cnx.execute(select_stmt)
 print(df2[0])
 streamlit.image(
   df2[0],
