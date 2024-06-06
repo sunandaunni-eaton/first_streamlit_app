@@ -32,6 +32,7 @@ product_caption = 'Our warm, comfortable, ' + option + ' sweatsuit!'
 select_stmt = """select direct_url, price, size_list, upsell_product_desc from catalog_for_website where color_or_style = '""" + option + """';"""
 df2 = session.sql(select_stmt)
 df2.collect()
+print(df2[0])
 streamlit.image(
   df2[0],
   width=400,
